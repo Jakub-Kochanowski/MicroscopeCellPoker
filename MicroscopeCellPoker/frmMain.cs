@@ -7,6 +7,8 @@ using System.IO.Ports;
 using System.Threading;
 using System.Management;
 using System.Numerics;
+using System.Text;
+using Microsoft.VisualBasic;
 
 namespace MicroscopeCellPoker
 {
@@ -21,14 +23,21 @@ namespace MicroscopeCellPoker
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double IndenterForce { get; private set; } = 0.0D;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public double IndicatorPosition { get; private set; } = 0.0D;
+
+
         private static SerialPort? IndenterSerialPort;
         private static SerialPort? StageSerialPort;
+        private static SerialPort? IndicatorSerialPort;
 
         private BackgroundWorker IndenterSerialPortBackgroundWorker = new BackgroundWorker();
         private BackgroundWorker StageSerialPortBackgroundWorker = new BackgroundWorker();
+        private BackgroundWorker IndicatorSerialPortBackgroundWorker = new BackgroundWorker();
 
         DataLogger IndenterForceDataLogger = new DataLogger();
         DataLogger StageZPositionDataLogger = new DataLogger();
+        DataLogger IndicatorPositionDataLogger = new DataLogger();
 
         private object StageSerialLockObject = new object();
 
@@ -36,7 +45,6 @@ namespace MicroscopeCellPoker
 
         private bool CollectData = false;
         StreamWriter? DataStreamWriter;
-
         public frmMain()
         {
             InitializeComponent();
@@ -166,7 +174,7 @@ namespace MicroscopeCellPoker
                 lblStageY.Text = "Stage Y: " + StagePosition[1].ToString();
                 lblStageZ.Text = "Stage Z: " + StagePosition[2].ToString();
 
-                StageZPositionDataLogger.Add(this.StagePosition[2]); 
+                StageZPositionDataLogger.Add(this.StagePosition[2]);
                 if (StageZPositionDataLogger.Data.Coordinates.Count > 1000)
                 {
                     StageZPositionDataLogger.Data.Coordinates.RemoveRange(0, 1);
@@ -175,8 +183,8 @@ namespace MicroscopeCellPoker
 
             if (CollectData)
             {
-                string data = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff")}, {this.IndenterForce}, {this.StagePosition[2]}";
-                DataStreamWriter.WriteLine(data);
+                string data = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fffff")}, {this.IndenterForce}, {this.StagePosition[2]}, {this.IndicatorPosition}";
+                DataStreamWriter.WriteLine(data); // Could be null -- It only gets called one way, so.
             }
 
             pltMain.Refresh();
@@ -410,6 +418,51 @@ namespace MicroscopeCellPoker
                 }
                 CollectData = false;
                 btnDataToggleCollection.Text = "Start Data Collection";
+            }
+        }
+
+        private void btnHolderConnectIndicator_Click(object sender, EventArgs e)
+        {
+            IndicatorSerialPort = new SerialPort(cmbStageCOMPort.Text.Split(" ")[0], 9600, Parity.None, 8, StopBits.One);
+            IndicatorSerialPort.ReadTimeout = 1000;
+            IndicatorSerialPort.WriteTimeout = 1000;
+            IndicatorSerialPort.DtrEnable = false;
+            IndicatorSerialPort.RtsEnable = false;
+            IndicatorSerialPort.NewLine = "\r";
+            IndicatorSerialPort.Encoding = Encoding.ASCII;
+            IndicatorSerialPort.Open();
+
+            IndicatorSerialPortBackgroundWorker = new BackgroundWorker();
+            IndicatorSerialPortBackgroundWorker.DoWork += IndicatorSerialPortBackgroundWorker_DoWork;
+            IndicatorSerialPortBackgroundWorker.RunWorkerAsync();
+        }
+
+        private void IndicatorSerialPortBackgroundWorker_DoWork(object? sender, DoWorkEventArgs e)
+        {
+            if (IndicatorSerialPort == null)
+                return;
+
+            while (!IndicatorSerialPortBackgroundWorker.CancellationPending && IndicatorSerialPort.IsOpen)
+            {
+                try
+                {
+                    IndicatorSerialPort.WriteLine("1");
+                    if (IndicatorSerialPort.BytesToRead != 0)
+                    {
+                        string msg = IndicatorSerialPort.ReadLine();
+                        if (msg[0] != '9')
+                        {
+                            msg = msg.Split('A')[1];
+                            IndicatorPosition = double.Parse(msg);
+                        }
+                    }
+
+                    Thread.Sleep(10);
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
         }
     }
