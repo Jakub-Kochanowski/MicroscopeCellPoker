@@ -37,6 +37,8 @@ namespace MicroscopeCellPoker
         private bool CollectData = false;
         StreamWriter? DataStreamWriter;
 
+        private string SampleData = "";
+
         public frmMain()
         {
             InitializeComponent();
@@ -132,13 +134,13 @@ namespace MicroscopeCellPoker
                         string posLine = StageSerialPort.ReadLine();
                         if (posLine.StartsWith(":A"))
                         {
-                            posLine.Remove(0, 3);
                             string[] positions = posLine.Split(" "); // Is this better to do than just run the split command 3 times? Compiler optimization. Who knows. Whatever.
                             StagePosition[0] = double.Parse(positions[1]);
                             StagePosition[1] = double.Parse(positions[2]);
                             StagePosition[2] = double.Parse(positions[3]);
                         }
                     }
+                    Thread.Sleep(100);
                 }
                 catch (Exception ex)
                 {
@@ -166,7 +168,7 @@ namespace MicroscopeCellPoker
                 lblStageY.Text = "Stage Y: " + StagePosition[1].ToString();
                 lblStageZ.Text = "Stage Z: " + StagePosition[2].ToString();
 
-                StageZPositionDataLogger.Add(this.StagePosition[2]); 
+                StageZPositionDataLogger.Add(this.StagePosition[2]);
                 if (StageZPositionDataLogger.Data.Coordinates.Count > 1000)
                 {
                     StageZPositionDataLogger.Data.Coordinates.RemoveRange(0, 1);
@@ -175,7 +177,7 @@ namespace MicroscopeCellPoker
 
             if (CollectData)
             {
-                string data = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff")}, {this.IndenterForce}, {this.StagePosition[2]}";
+                string data = $"{DateTime.Now.ToString("HH:mm:ss:ffff")},{this.SampleData},{this.IndenterForce},{this.StagePosition[0]},{this.StagePosition[1]},{this.StagePosition[2]}";
                 DataStreamWriter.WriteLine(data);
             }
 
@@ -215,7 +217,7 @@ namespace MicroscopeCellPoker
             lock (StageSerialLockObject)
             {
                 StageSerialPort.DiscardInBuffer();
-                StageSerialPort.DiscardInBuffer();
+                StageSerialPort.DiscardOutBuffer();
                 StageSerialPort.Write("\\");
             }
         }
@@ -231,7 +233,7 @@ namespace MicroscopeCellPoker
                 int zDir = Z * 9999999;
 
                 StageSerialPort.DiscardInBuffer();
-                StageSerialPort.DiscardInBuffer();
+                StageSerialPort.DiscardOutBuffer();
                 StageSerialPort.Write($"R X={xDir} Y={yDir} Z={zDir}\r");
             }
         }
@@ -327,8 +329,8 @@ namespace MicroscopeCellPoker
             lock (StageSerialLockObject)
             {
                 StageSerialPort.DiscardInBuffer();
-                StageSerialPort.DiscardInBuffer();
-                StageSerialPort.Write($"M X={numStageCtrlAbsRelXum.Value} Y={numStageCtrlAbsRelXum.Value} Z={numStageCtrlAbsRelXum.Value}\r");
+                StageSerialPort.DiscardOutBuffer();
+                StageSerialPort.Write($"M X={numStageCtrlAbsRelXum.Value} Y={numStageCtrlAbsRelYum.Value} Z={numStageCtrlAbsRelZum.Value}\r");
             }
         }
 
@@ -339,8 +341,8 @@ namespace MicroscopeCellPoker
             lock (StageSerialLockObject)
             {
                 StageSerialPort.DiscardInBuffer();
-                StageSerialPort.DiscardInBuffer();
-                StageSerialPort.Write($"R X={numStageCtrlAbsRelXum.Value} Y={numStageCtrlAbsRelXum.Value} Z={numStageCtrlAbsRelXum.Value}\r");
+                StageSerialPort.DiscardOutBuffer();
+                StageSerialPort.Write($"R X={numStageCtrlAbsRelXum.Value} Y={numStageCtrlAbsRelYum.Value} Z={numStageCtrlAbsRelZum.Value}\r");
             }
         }
 
@@ -351,7 +353,7 @@ namespace MicroscopeCellPoker
             lock (StageSerialLockObject)
             {
                 StageSerialPort.DiscardInBuffer();
-                StageSerialPort.DiscardInBuffer();
+                StageSerialPort.DiscardOutBuffer();
                 StageSerialPort.Write("R X=0 Y=0 Z=0\r");
             }
         }
@@ -411,6 +413,11 @@ namespace MicroscopeCellPoker
                 CollectData = false;
                 btnDataToggleCollection.Text = "Start Data Collection";
             }
+        }
+
+        private void btnDataSetSampleData_Click(object sender, EventArgs e)
+        {
+            this.SampleData = txtDataSampleData.Text;
         }
     }
 }

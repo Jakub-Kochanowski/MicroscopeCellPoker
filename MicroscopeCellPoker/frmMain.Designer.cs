@@ -78,6 +78,10 @@
             lblStageY = new Label();
             lblStageZ = new Label();
             groupBox9 = new GroupBox();
+            groupBox10 = new GroupBox();
+            btnDataSetSampleData = new Button();
+            label14 = new Label();
+            txtDataSampleData = new TextBox();
             btnDataToggleCollection = new Button();
             btnDataSelectDirectory = new Button();
             txtDataFileName = new TextBox();
@@ -97,15 +101,16 @@
             groupBox7.SuspendLayout();
             groupBox4.SuspendLayout();
             groupBox9.SuspendLayout();
+            groupBox10.SuspendLayout();
             SuspendLayout();
             // 
             // pltMain
             // 
             pltMain.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pltMain.DisplayScale = 1.25F;
-            pltMain.Location = new Point(437, 66);
+            pltMain.Location = new Point(437, 67);
             pltMain.Name = "pltMain";
-            pltMain.Size = new Size(1043, 1028);
+            pltMain.Size = new Size(1043, 1193);
             pltMain.TabIndex = 0;
             // 
             // tmrPlot
@@ -118,7 +123,7 @@
             // 
             lblIndenterForce.AutoSize = true;
             lblIndenterForce.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblIndenterForce.Location = new Point(12, 9);
+            lblIndenterForce.Location = new Point(11, 9);
             lblIndenterForce.Name = "lblIndenterForce";
             lblIndenterForce.Size = new Size(398, 54);
             lblIndenterForce.TabIndex = 1;
@@ -128,7 +133,7 @@
             // 
             groupBox1.Controls.Add(groupBox3);
             groupBox1.Controls.Add(groupBox5);
-            groupBox1.Location = new Point(12, 231);
+            groupBox1.Location = new Point(11, 231);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(419, 227);
             groupBox1.TabIndex = 2;
@@ -140,7 +145,7 @@
             groupBox3.Controls.Add(btnIndenterConnect);
             groupBox3.Controls.Add(label1);
             groupBox3.Controls.Add(cmbIndenterCOMPort);
-            groupBox3.Location = new Point(6, 26);
+            groupBox3.Location = new Point(6, 27);
             groupBox3.Name = "groupBox3";
             groupBox3.Size = new Size(407, 95);
             groupBox3.TabIndex = 5;
@@ -169,7 +174,7 @@
             // cmbIndenterCOMPort
             // 
             cmbIndenterCOMPort.FormattingEnabled = true;
-            cmbIndenterCOMPort.Location = new Point(87, 26);
+            cmbIndenterCOMPort.Location = new Point(87, 27);
             cmbIndenterCOMPort.Name = "cmbIndenterCOMPort";
             cmbIndenterCOMPort.Size = new Size(314, 28);
             cmbIndenterCOMPort.TabIndex = 0;
@@ -182,7 +187,7 @@
             groupBox5.Controls.Add(btnIndenterCalibrate);
             groupBox5.Location = new Point(6, 127);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(407, 94);
+            groupBox5.Size = new Size(407, 93);
             groupBox5.TabIndex = 0;
             groupBox5.TabStop = false;
             groupBox5.Text = "Calibration";
@@ -198,7 +203,7 @@
             // 
             // numIndenterCalibration
             // 
-            numIndenterCalibration.Location = new Point(114, 26);
+            numIndenterCalibration.Location = new Point(114, 27);
             numIndenterCalibration.Name = "numIndenterCalibration";
             numIndenterCalibration.Size = new Size(250, 27);
             numIndenterCalibration.TabIndex = 2;
@@ -226,9 +231,9 @@
             // 
             groupBox2.Controls.Add(groupBox6);
             groupBox2.Controls.Add(groupBox4);
-            groupBox2.Location = new Point(12, 464);
+            groupBox2.Location = new Point(11, 464);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(419, 486);
+            groupBox2.Size = new Size(419, 485);
             groupBox2.TabIndex = 3;
             groupBox2.TabStop = false;
             groupBox2.Text = "Stage";
@@ -281,7 +286,7 @@
             groupBox8.Controls.Add(numStageCtrlAbsRelXum);
             groupBox8.Location = new Point(6, 227);
             groupBox8.Name = "groupBox8";
-            groupBox8.Size = new Size(395, 126);
+            groupBox8.Size = new Size(395, 125);
             groupBox8.TabIndex = 1;
             groupBox8.TabStop = false;
             groupBox8.Text = "Absolute/Relative";
@@ -298,7 +303,7 @@
             // 
             // btnStageCtrlAbsoluteMove
             // 
-            btnStageCtrlAbsoluteMove.Location = new Point(254, 26);
+            btnStageCtrlAbsoluteMove.Location = new Point(254, 27);
             btnStageCtrlAbsoluteMove.Name = "btnStageCtrlAbsoluteMove";
             btnStageCtrlAbsoluteMove.Size = new Size(135, 43);
             btnStageCtrlAbsoluteMove.TabIndex = 8;
@@ -309,7 +314,7 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(218, 94);
+            label11.Location = new Point(218, 93);
             label11.Name = "label11";
             label11.Size = new Size(30, 20);
             label11.TabIndex = 7;
@@ -336,7 +341,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(6, 94);
+            label8.Location = new Point(6, 93);
             label8.Name = "label8";
             label8.Size = new Size(21, 20);
             label8.TabIndex = 5;
@@ -376,7 +381,7 @@
             // 
             // numStageCtrlAbsRelXum
             // 
-            numStageCtrlAbsRelXum.Location = new Point(33, 26);
+            numStageCtrlAbsRelXum.Location = new Point(33, 27);
             numStageCtrlAbsRelXum.Name = "numStageCtrlAbsRelXum";
             numStageCtrlAbsRelXum.Size = new Size(179, 27);
             numStageCtrlAbsRelXum.TabIndex = 0;
@@ -393,7 +398,7 @@
             groupBox7.Controls.Add(btnStageCtrlRunXRight);
             groupBox7.Controls.Add(btnStageCtrlRunXLeft);
             groupBox7.Controls.Add(btnStageCtrlRunYUp);
-            groupBox7.Location = new Point(6, 26);
+            groupBox7.Location = new Point(6, 27);
             groupBox7.Name = "groupBox7";
             groupBox7.Size = new Size(230, 195);
             groupBox7.TabIndex = 0;
@@ -404,7 +409,7 @@
             // 
             btnStageCtrlRunXRightYUp.Location = new Point(118, 27);
             btnStageCtrlRunXRightYUp.Name = "btnStageCtrlRunXRightYUp";
-            btnStageCtrlRunXRightYUp.Size = new Size(50, 50);
+            btnStageCtrlRunXRightYUp.Size = new Size(50, 51);
             btnStageCtrlRunXRightYUp.TabIndex = 11;
             btnStageCtrlRunXRightYUp.Text = "↗";
             btnStageCtrlRunXRightYUp.UseVisualStyleBackColor = true;
@@ -414,7 +419,7 @@
             // 
             btnStageCtrlRunXRightYDown.Location = new Point(118, 139);
             btnStageCtrlRunXRightYDown.Name = "btnStageCtrlRunXRightYDown";
-            btnStageCtrlRunXRightYDown.Size = new Size(50, 50);
+            btnStageCtrlRunXRightYDown.Size = new Size(50, 51);
             btnStageCtrlRunXRightYDown.TabIndex = 10;
             btnStageCtrlRunXRightYDown.Text = "↘";
             btnStageCtrlRunXRightYDown.UseVisualStyleBackColor = true;
@@ -424,7 +429,7 @@
             // 
             btnStageCtrlRunXLeftYDown.Location = new Point(6, 139);
             btnStageCtrlRunXLeftYDown.Name = "btnStageCtrlRunXLeftYDown";
-            btnStageCtrlRunXLeftYDown.Size = new Size(50, 50);
+            btnStageCtrlRunXLeftYDown.Size = new Size(50, 51);
             btnStageCtrlRunXLeftYDown.TabIndex = 9;
             btnStageCtrlRunXLeftYDown.Text = "↙";
             btnStageCtrlRunXLeftYDown.UseVisualStyleBackColor = true;
@@ -434,7 +439,7 @@
             // 
             btnStageCtrlRunXLeftYUp.Location = new Point(6, 27);
             btnStageCtrlRunXLeftYUp.Name = "btnStageCtrlRunXLeftYUp";
-            btnStageCtrlRunXLeftYUp.Size = new Size(50, 50);
+            btnStageCtrlRunXLeftYUp.Size = new Size(50, 51);
             btnStageCtrlRunXLeftYUp.TabIndex = 8;
             btnStageCtrlRunXLeftYUp.Text = "↖";
             btnStageCtrlRunXLeftYUp.UseVisualStyleBackColor = true;
@@ -444,7 +449,7 @@
             // 
             btnStageCtrlRunZDown.Location = new Point(174, 139);
             btnStageCtrlRunZDown.Name = "btnStageCtrlRunZDown";
-            btnStageCtrlRunZDown.Size = new Size(50, 50);
+            btnStageCtrlRunZDown.Size = new Size(50, 51);
             btnStageCtrlRunZDown.TabIndex = 7;
             btnStageCtrlRunZDown.Text = "↓";
             btnStageCtrlRunZDown.UseVisualStyleBackColor = true;
@@ -455,7 +460,7 @@
             // 
             btnStageCtrlRunZUp.Location = new Point(174, 27);
             btnStageCtrlRunZUp.Name = "btnStageCtrlRunZUp";
-            btnStageCtrlRunZUp.Size = new Size(50, 50);
+            btnStageCtrlRunZUp.Size = new Size(50, 51);
             btnStageCtrlRunZUp.TabIndex = 6;
             btnStageCtrlRunZUp.Text = "↑";
             btnStageCtrlRunZUp.UseVisualStyleBackColor = true;
@@ -466,7 +471,7 @@
             // 
             btnStageCtrlRunYDown.Location = new Point(62, 139);
             btnStageCtrlRunYDown.Name = "btnStageCtrlRunYDown";
-            btnStageCtrlRunYDown.Size = new Size(50, 50);
+            btnStageCtrlRunYDown.Size = new Size(50, 51);
             btnStageCtrlRunYDown.TabIndex = 4;
             btnStageCtrlRunYDown.Text = "↓";
             btnStageCtrlRunYDown.UseVisualStyleBackColor = true;
@@ -477,7 +482,7 @@
             // 
             btnStageCtrlRunXRight.Location = new Point(118, 83);
             btnStageCtrlRunXRight.Name = "btnStageCtrlRunXRight";
-            btnStageCtrlRunXRight.Size = new Size(50, 50);
+            btnStageCtrlRunXRight.Size = new Size(50, 51);
             btnStageCtrlRunXRight.TabIndex = 3;
             btnStageCtrlRunXRight.Text = "→";
             btnStageCtrlRunXRight.UseVisualStyleBackColor = true;
@@ -488,7 +493,7 @@
             // 
             btnStageCtrlRunXLeft.Location = new Point(6, 83);
             btnStageCtrlRunXLeft.Name = "btnStageCtrlRunXLeft";
-            btnStageCtrlRunXLeft.Size = new Size(50, 50);
+            btnStageCtrlRunXLeft.Size = new Size(50, 51);
             btnStageCtrlRunXLeft.TabIndex = 2;
             btnStageCtrlRunXLeft.Text = "←";
             btnStageCtrlRunXLeft.UseVisualStyleBackColor = true;
@@ -499,7 +504,7 @@
             // 
             btnStageCtrlRunYUp.Location = new Point(62, 27);
             btnStageCtrlRunYUp.Name = "btnStageCtrlRunYUp";
-            btnStageCtrlRunYUp.Size = new Size(50, 50);
+            btnStageCtrlRunYUp.Size = new Size(50, 51);
             btnStageCtrlRunYUp.TabIndex = 0;
             btnStageCtrlRunYUp.Text = "↑";
             btnStageCtrlRunYUp.UseVisualStyleBackColor = true;
@@ -511,7 +516,7 @@
             groupBox4.Controls.Add(btnStageConnect);
             groupBox4.Controls.Add(label2);
             groupBox4.Controls.Add(cmbStageCOMPort);
-            groupBox4.Location = new Point(6, 26);
+            groupBox4.Location = new Point(6, 27);
             groupBox4.Name = "groupBox4";
             groupBox4.Size = new Size(407, 95);
             groupBox4.TabIndex = 5;
@@ -540,7 +545,7 @@
             // cmbStageCOMPort
             // 
             cmbStageCOMPort.FormattingEnabled = true;
-            cmbStageCOMPort.Location = new Point(87, 26);
+            cmbStageCOMPort.Location = new Point(87, 27);
             cmbStageCOMPort.Name = "cmbStageCOMPort";
             cmbStageCOMPort.Size = new Size(314, 28);
             cmbStageCOMPort.TabIndex = 3;
@@ -558,7 +563,7 @@
             // 
             lblStageX.AutoSize = true;
             lblStageX.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblStageX.Location = new Point(12, 66);
+            lblStageX.Location = new Point(11, 67);
             lblStageX.Name = "lblStageX";
             lblStageX.Size = new Size(266, 54);
             lblStageX.TabIndex = 5;
@@ -568,7 +573,7 @@
             // 
             lblStageY.AutoSize = true;
             lblStageY.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblStageY.Location = new Point(12, 120);
+            lblStageY.Location = new Point(11, 120);
             lblStageY.Name = "lblStageY";
             lblStageY.Size = new Size(264, 54);
             lblStageY.TabIndex = 6;
@@ -578,7 +583,7 @@
             // 
             lblStageZ.AutoSize = true;
             lblStageZ.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblStageZ.Location = new Point(12, 174);
+            lblStageZ.Location = new Point(11, 173);
             lblStageZ.Name = "lblStageZ";
             lblStageZ.Size = new Size(264, 54);
             lblStageZ.TabIndex = 7;
@@ -586,18 +591,61 @@
             // 
             // groupBox9
             // 
+            groupBox9.Controls.Add(groupBox10);
             groupBox9.Controls.Add(btnDataToggleCollection);
             groupBox9.Controls.Add(btnDataSelectDirectory);
             groupBox9.Controls.Add(txtDataFileName);
             groupBox9.Controls.Add(txtDataDirectory);
             groupBox9.Controls.Add(label13);
             groupBox9.Controls.Add(label12);
-            groupBox9.Location = new Point(12, 956);
+            groupBox9.Location = new Point(11, 956);
             groupBox9.Name = "groupBox9";
-            groupBox9.Size = new Size(419, 138);
+            groupBox9.Size = new Size(419, 304);
             groupBox9.TabIndex = 8;
             groupBox9.TabStop = false;
             groupBox9.Text = "Data Collection";
+            // 
+            // groupBox10
+            // 
+            groupBox10.Controls.Add(btnDataSetSampleData);
+            groupBox10.Controls.Add(label14);
+            groupBox10.Controls.Add(txtDataSampleData);
+            groupBox10.Location = new Point(7, 139);
+            groupBox10.Margin = new Padding(3, 4, 3, 4);
+            groupBox10.Name = "groupBox10";
+            groupBox10.Padding = new Padding(3, 4, 3, 4);
+            groupBox10.Size = new Size(406, 159);
+            groupBox10.TabIndex = 6;
+            groupBox10.TabStop = false;
+            groupBox10.Text = "Sample Data";
+            // 
+            // btnDataSetSampleData
+            // 
+            btnDataSetSampleData.Location = new Point(7, 68);
+            btnDataSetSampleData.Margin = new Padding(3, 4, 3, 4);
+            btnDataSetSampleData.Name = "btnDataSetSampleData";
+            btnDataSetSampleData.Size = new Size(393, 83);
+            btnDataSetSampleData.TabIndex = 3;
+            btnDataSetSampleData.Text = "Set Sample Data";
+            btnDataSetSampleData.UseVisualStyleBackColor = true;
+            btnDataSetSampleData.Click += btnDataSetSampleData_Click;
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Location = new Point(7, 33);
+            label14.Name = "label14";
+            label14.Size = new Size(98, 20);
+            label14.TabIndex = 2;
+            label14.Text = "Sample Data:";
+            // 
+            // txtDataSampleData
+            // 
+            txtDataSampleData.Location = new Point(101, 29);
+            txtDataSampleData.Margin = new Padding(3, 4, 3, 4);
+            txtDataSampleData.Name = "txtDataSampleData";
+            txtDataSampleData.Size = new Size(298, 27);
+            txtDataSampleData.TabIndex = 0;
             // 
             // btnDataToggleCollection
             // 
@@ -611,7 +659,7 @@
             // 
             // btnDataSelectDirectory
             // 
-            btnDataSelectDirectory.Location = new Point(370, 26);
+            btnDataSelectDirectory.Location = new Point(370, 27);
             btnDataSelectDirectory.Name = "btnDataSelectDirectory";
             btnDataSelectDirectory.Size = new Size(43, 29);
             btnDataSelectDirectory.TabIndex = 4;
@@ -628,7 +676,7 @@
             // 
             // txtDataDirectory
             // 
-            txtDataDirectory.Location = new Point(85, 26);
+            txtDataDirectory.Location = new Point(85, 27);
             txtDataDirectory.Name = "txtDataDirectory";
             txtDataDirectory.Size = new Size(279, 27);
             txtDataDirectory.TabIndex = 2;
@@ -636,7 +684,7 @@
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new Point(6, 62);
+            label13.Location = new Point(6, 61);
             label13.Name = "label13";
             label13.Size = new Size(79, 20);
             label13.TabIndex = 1;
@@ -655,7 +703,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1492, 1106);
+            ClientSize = new Size(1493, 1272);
             Controls.Add(groupBox9);
             Controls.Add(lblStageZ);
             Controls.Add(lblStageY);
@@ -686,6 +734,8 @@
             groupBox4.PerformLayout();
             groupBox9.ResumeLayout(false);
             groupBox9.PerformLayout();
+            groupBox10.ResumeLayout(false);
+            groupBox10.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -747,5 +797,9 @@
         private TextBox txtDataDirectory;
         private Label label13;
         private Label label12;
+        private GroupBox groupBox10;
+        private Button btnDataSetSampleData;
+        private Label label14;
+        private TextBox txtDataSampleData;
     }
 }
