@@ -22,15 +22,11 @@ namespace MicroscopeCellPoker
         public double IndenterForce { get; private set; } = 0.0D;
 
         private static SerialPort? IndenterSerialPort;
-        private static SerialPort? StageSerialPort;
 
         private BackgroundWorker IndenterSerialPortBackgroundWorker = new BackgroundWorker();
-        private BackgroundWorker StageSerialPortBackgroundWorker = new BackgroundWorker();
 
         DataLogger IndenterForceDataLogger = new DataLogger();
         DataLogger StageZPositionDataLogger = new DataLogger();
-
-        private object StageSerialLockObject = new object();
 
         double[] StagePosition = new double[3] { 0, 0, 0 };
 
@@ -38,6 +34,8 @@ namespace MicroscopeCellPoker
         StreamWriter? DataStreamWriter;
 
         private string SampleData = "";
+
+        StageController MicroscopeStageController;
 
         public frmMain()
         {
@@ -110,45 +108,6 @@ namespace MicroscopeCellPoker
             }
         }
 
-        private void StageSerialPortBackgroundWorker_DoWork(object? sender, DoWorkEventArgs e)
-        {
-            if (StageSerialPort == null)
-            {
-                MessageBox.Show("Stage Serial Port is not initialized.", "Error", MessageBoxButtons.OK);
-                return;
-            }
-
-            while (!StageSerialPortBackgroundWorker.CancellationPending)
-            {
-                try
-                {
-                    // Read the stage position
-                    lock (StageSerialLockObject)
-                    {
-                        StageSerialPort.DiscardInBuffer();
-                        StageSerialPort.DiscardOutBuffer();
-
-                        // Get Position
-                        StageSerialPort.Write("W X Y Z\r");
-
-                        string posLine = StageSerialPort.ReadLine();
-                        if (posLine.StartsWith(":A"))
-                        {
-                            string[] positions = posLine.Split(" "); // Is this better to do than just run the split command 3 times? Compiler optimization. Who knows. Whatever.
-                            StagePosition[0] = double.Parse(positions[1]);
-                            StagePosition[1] = double.Parse(positions[2]);
-                            StagePosition[2] = double.Parse(positions[3]);
-                        }
-                    }
-                    Thread.Sleep(100);
-                }
-                catch (Exception ex)
-                {
-                    continue;
-                }
-            }
-        }
-
         private void tmrPlot_Tick(object sender, EventArgs e)
         {
             if (IndenterSerialPort != null && IndenterSerialPort.IsOpen)
@@ -162,7 +121,7 @@ namespace MicroscopeCellPoker
                 }
             }
 
-            if (StageSerialPort != null && StageSerialPort.IsOpen)
+            if (this.MicroscopeStageController != null)
             {
                 lblStageX.Text = "Stage X: " + StagePosition[0].ToString();
                 lblStageY.Text = "Stage Y: " + StagePosition[1].ToString();
@@ -198,54 +157,39 @@ namespace MicroscopeCellPoker
 
         private void btnStageConnect_Click(object sender, EventArgs e)
         {
-            StageSerialPort = new SerialPort(cmbStageCOMPort.Text.Split(" ")[0], 9600);
-            StageSerialPort.ReadTimeout = 1000;
-            StageSerialPort.WriteTimeout = 1000;
-            StageSerialPort.DtrEnable = false;
-            StageSerialPort.RtsEnable = false;
-            StageSerialPort.Open();
+            MicroscopeStageController = new StageController(cmbStageCOMPort.Text.Split(" ")[0], 9600);
 
-            StageSerialPortBackgroundWorker = new BackgroundWorker();
-            StageSerialPortBackgroundWorker.DoWork += StageSerialPortBackgroundWorker_DoWork;
-            StageSerialPortBackgroundWorker.RunWorkerAsync();
+            MicroscopeStageController.OnPositionUpdated += (x, y, z) => PositionUpdated(x, y, z);
+        }
+
+        public void PositionUpdated(double x, double y, double z)
+        {
+            this.StagePosition[0] = x;
+            this.StagePosition[1] = y;
+            this.StagePosition[2] = z;
         }
 
         private void StageHalt()
         {
-            if (StageSerialPort == null || !StageSerialPort.IsOpen) return;
+            if (MicroscopeStageController == null) return; // TO DO: Figure out a better way. Could be not null while not connected.
 
-            lock (StageSerialLockObject)
-            {
-                StageSerialPort.DiscardInBuffer();
-                StageSerialPort.DiscardOutBuffer();
-                StageSerialPort.Write("\\");
-            }
+            MicroscopeStageController.SendCommand("\\");
         }
 
         private void StageRun(int X, int Y, int Z) // Lazy
         {
-            if (StageSerialPort == null || !StageSerialPort.IsOpen) return;
+            if (MicroscopeStageController == null) return;
 
-            lock (StageSerialLockObject)
-            {
-                int xDir = X * 9999999;
-                int yDir = Y * 9999999;
-                int zDir = Z * 9999999;
+            int xDir = X * 9999999;
+            int yDir = Y * 9999999;
+            int zDir = Z * 9999999;
 
-                StageSerialPort.DiscardInBuffer();
-                StageSerialPort.DiscardOutBuffer();
-                StageSerialPort.Write($"R X={xDir} Y={yDir} Z={zDir}\r");
-            }
+            MicroscopeStageController.SendCommand($"R X={xDir} Y={yDir} Z={zDir}");
         }
 
         private void btnStageCtrlRunYUp_MouseDown(object sender, MouseEventArgs e)
         {
             StageRun(0, 1, 0);
-        }
-
-        private void btnStageCtrlRunYDown_MouseUp(object sender, MouseEventArgs e)
-        {
-            StageRun(0, -1, 0);
         }
 
         private void btnStageCtrlRunXLeft_MouseDown(object sender, MouseEventArgs e)
@@ -286,12 +230,19 @@ namespace MicroscopeCellPoker
         {
             StageRun(1, -1, 0);
         }
+        private void btnStageCtrlRunYDown_MouseDown(object sender, MouseEventArgs e)
+        {
+            StageRun(0, -1, 0);
+        }
 
         private void btnStageCtrlRunXLeft_MouseUp(object sender, MouseEventArgs e)
         {
             StageHalt();
         }
-
+        private void btnStageCtrlRunYDown_MouseUp(object sender, MouseEventArgs e)
+        {
+            StageHalt();
+        }
         private void btnStageCtrlRunXRight_MouseUp(object sender, MouseEventArgs e)
         {
             StageHalt();
@@ -312,10 +263,7 @@ namespace MicroscopeCellPoker
             StageHalt();
         }
 
-        private void btnStageCtrlRunYDown_MouseDown(object sender, MouseEventArgs e)
-        {
-            StageHalt();
-        }
+
 
         private void btnStageCtrlHalt_Click(object sender, EventArgs e)
         {
@@ -324,38 +272,21 @@ namespace MicroscopeCellPoker
 
         private void btnStageCtrlAbsoluteMove_Click(object sender, EventArgs e)
         {
-            if (StageSerialPort == null || !StageSerialPort.IsOpen) return;
+            if (MicroscopeStageController == null) return;
 
-            lock (StageSerialLockObject)
-            {
-                StageSerialPort.DiscardInBuffer();
-                StageSerialPort.DiscardOutBuffer();
-                StageSerialPort.Write($"M X={numStageCtrlAbsRelXum.Value} Y={numStageCtrlAbsRelYum.Value} Z={numStageCtrlAbsRelZum.Value}\r");
-            }
+            MicroscopeStageController.SendCommand($"M X={numStageCtrlAbsRelXum.Value} Y={numStageCtrlAbsRelYum.Value} Z={numStageCtrlAbsRelZum.Value}");
         }
 
         private void btnStageCtrlRelativeMove_Click(object sender, EventArgs e)
         {
-            if (StageSerialPort == null || !StageSerialPort.IsOpen) return;
-
-            lock (StageSerialLockObject)
-            {
-                StageSerialPort.DiscardInBuffer();
-                StageSerialPort.DiscardOutBuffer();
-                StageSerialPort.Write($"R X={numStageCtrlAbsRelXum.Value} Y={numStageCtrlAbsRelYum.Value} Z={numStageCtrlAbsRelZum.Value}\r");
-            }
+            if (MicroscopeStageController == null) return;
+            MicroscopeStageController.SendCommand($"R X={numStageCtrlAbsRelXum.Value} Y={numStageCtrlAbsRelYum.Value} Z={numStageCtrlAbsRelZum.Value}");
         }
 
         private void btnHome_Click(object sender, EventArgs e)
         {
-            if (StageSerialPort == null || !StageSerialPort.IsOpen) return;
-
-            lock (StageSerialLockObject)
-            {
-                StageSerialPort.DiscardInBuffer();
-                StageSerialPort.DiscardOutBuffer();
-                StageSerialPort.Write("R X=0 Y=0 Z=0\r");
-            }
+            if (MicroscopeStageController == null) return;
+            MicroscopeStageController.SendCommand("R X=0 Y=0 Z=0");
         }
 
         private void btnIndenterCalibrate_Click(object sender, EventArgs e)
@@ -418,6 +349,25 @@ namespace MicroscopeCellPoker
         private void btnDataSetSampleData_Click(object sender, EventArgs e)
         {
             this.SampleData = txtDataSampleData.Text;
+        }
+
+        private void btnStageCtrlRunXLeftYUp_MouseUp(object sender, MouseEventArgs e)
+        {
+            StageHalt();
+        }
+
+        private void btnStageCtrlRunXRightYDown_MouseUp(object sender, MouseEventArgs e)
+        {
+            StageHalt();
+        }
+        private void btnStageCtrlRunXLeftYDown_MouseUp(object sender, MouseEventArgs e)
+        {
+            StageHalt();
+        }
+
+        private void btnStageCtrlRunXRightYUp_MouseUp(object sender, MouseEventArgs e)
+        {
+            StageHalt();
         }
     }
 }

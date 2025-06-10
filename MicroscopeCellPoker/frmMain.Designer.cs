@@ -414,6 +414,7 @@
             btnStageCtrlRunXRightYUp.Text = "↗";
             btnStageCtrlRunXRightYUp.UseVisualStyleBackColor = true;
             btnStageCtrlRunXRightYUp.MouseDown += btnStageCtrlRunXRightYUp_MouseDown;
+            btnStageCtrlRunXRightYUp.MouseUp += btnStageCtrlRunXRightYUp_MouseUp;
             // 
             // btnStageCtrlRunXRightYDown
             // 
@@ -424,6 +425,7 @@
             btnStageCtrlRunXRightYDown.Text = "↘";
             btnStageCtrlRunXRightYDown.UseVisualStyleBackColor = true;
             btnStageCtrlRunXRightYDown.MouseDown += btnStageCtrlRunXRightYDown_MouseDown;
+            btnStageCtrlRunXRightYDown.MouseUp += btnStageCtrlRunXRightYDown_MouseUp;
             // 
             // btnStageCtrlRunXLeftYDown
             // 
@@ -434,6 +436,7 @@
             btnStageCtrlRunXLeftYDown.Text = "↙";
             btnStageCtrlRunXLeftYDown.UseVisualStyleBackColor = true;
             btnStageCtrlRunXLeftYDown.MouseDown += btnStageCtrlRunXLeftYDown_MouseDown;
+            btnStageCtrlRunXLeftYDown.MouseUp += btnStageCtrlRunXLeftYDown_MouseUp;
             // 
             // btnStageCtrlRunXLeftYUp
             // 
@@ -444,6 +447,7 @@
             btnStageCtrlRunXLeftYUp.Text = "↖";
             btnStageCtrlRunXLeftYUp.UseVisualStyleBackColor = true;
             btnStageCtrlRunXLeftYUp.MouseDown += btnStageCtrlRunXLeftYUp_MouseDown;
+            btnStageCtrlRunXLeftYUp.MouseUp += btnStageCtrlRunXLeftYUp_MouseUp;
             // 
             // btnStageCtrlRunZDown
             // 
